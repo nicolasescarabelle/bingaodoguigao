@@ -11,7 +11,7 @@
   <style>
     td {
       width: 70px;
-      aspect-ratio: 1 / 1; /* quadrado perfeito */
+      aspect-ratio: 1 / 1;
       font-size: 20px;
       transition: background 0.3s, transform 0.2s;
       cursor: pointer;
@@ -45,7 +45,8 @@
   <div class="container">
     <h1 class="mb-2">Bingão do Guigão</h1>
     <h5 id="nick-display" class="text-muted mb-4"></h5>
-    <div id="cartela-container" class="tabela-wrapper"></div>
+    <div id="cartela-container" class="tabela-wrapper mb-3"></div>
+    <button id="limpar-btn" class="btn btn-outline-danger d-none">Limpar Marcações</button>
   </div>
 
   <!-- Bootstrap JS -->
@@ -92,10 +93,27 @@
       return linhas;
     }
 
-    function renderCartela(linhas) {
+    function salvarMarcacoes(nick, numerosMarcados) {
+      sessionStorage.setItem(`marcados_${nick}`, JSON.stringify(numerosMarcados));
+    }
+
+    function carregarMarcacoes(nick) {
+      const data = sessionStorage.getItem(`marcados_${nick}`);
+      return data ? JSON.parse(data) : [];
+    }
+
+    function limparMarcacoes(nick) {
+      sessionStorage.removeItem(`marcados_${nick}`);
+      renderCartela(gerarCartela(hashToSeed(nick)), nick); // renderiza novamente sem marcações
+    }
+
+    function renderCartela(linhas, nick) {
       const container = document.getElementById('cartela-container');
       const tabela = document.createElement('table');
       tabela.className = "table table-bordered";
+
+      const marcados = new Set(carregarMarcacoes(nick));
+      const novosMarcados = new Set(marcados);
 
       linhas.forEach(linha => {
         const tr = document.createElement('tr');
@@ -104,8 +122,18 @@
           td.textContent = numero;
           td.className = "align-middle text-center";
 
+          if (marcados.has(numero)) {
+            td.classList.add('marcado');
+          }
+
           td.addEventListener('click', () => {
             td.classList.toggle('marcado');
+            if (td.classList.contains('marcado')) {
+              novosMarcados.add(numero);
+            } else {
+              novosMarcados.delete(numero);
+            }
+            salvarMarcacoes(nick, Array.from(novosMarcados));
           });
 
           tr.appendChild(td);
@@ -122,7 +150,13 @@
       document.getElementById('nick-display').textContent = `Twitch: ${nick}`;
       const seed = hashToSeed(nick);
       const cartela = gerarCartela(seed);
-      renderCartela(cartela);
+      renderCartela(cartela, nick);
+
+      const limparBtn = document.getElementById('limpar-btn');
+      limparBtn.classList.remove('d-none');
+      limparBtn.addEventListener('click', () => {
+        limparMarcacoes(nick);
+      });
     } else {
       document.getElementById('cartela-container').innerHTML = "<p class='text-danger'>Parâmetro 'nick' não fornecido na URL.</p>";
     }
