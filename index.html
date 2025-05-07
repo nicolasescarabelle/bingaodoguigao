@@ -11,12 +11,13 @@
   <style>
     td {
       width: 70px;
-      height: 70px;
+      aspect-ratio: 1 / 1; /* quadrado perfeito */
       font-size: 20px;
       transition: background 0.3s, transform 0.2s;
       cursor: pointer;
       vertical-align: middle;
-      padding: 10px;
+      padding: 0;
+      text-align: center;
     }
 
     td:hover {
@@ -29,6 +30,14 @@
       color: white;
       font-weight: bold;
     }
+
+    table {
+      table-layout: fixed;
+    }
+
+    .tabela-wrapper {
+      display: inline-block;
+    }
   </style>
 </head>
 <body class="bg-light d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
@@ -36,7 +45,7 @@
   <div class="container">
     <h1 class="mb-2">Bingão do Guigão</h1>
     <h5 id="nick-display" class="text-muted mb-4"></h5>
-    <div id="cartela-container" class="d-flex justify-content-center"></div>
+    <div id="cartela-container" class="tabela-wrapper"></div>
   </div>
 
   <!-- Bootstrap JS -->
@@ -93,7 +102,7 @@
         linha.forEach(numero => {
           const td = document.createElement('td');
           td.textContent = numero;
-          td.className = "text-start";
+          td.className = "align-middle text-center";
 
           td.addEventListener('click', () => {
             td.classList.toggle('marcado');
