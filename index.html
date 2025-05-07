@@ -49,8 +49,20 @@
 </head>
 <body class="bg-light d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
 
+  <div class="container">
+    <h1 class="mb-2">Bingão do Guigão</h1>
+    <h5 id="nick-display" class="text-muted mb-4"></h5>
+    <div id="cartela-container" class="mb-3"></div>
+    <button id="limpar-btn" class="btn btn-outline-danger d-none">Limpar Marcações</button>
+  </div>
+
+  <!-- Áudios -->
+  <audio id="audio-select" src="https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3"></audio>
+  <audio id="audio-unselect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3"></audio>
+  <audio id="audio-clear" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-changing-tab-206.mp3"></audio>
+
   <footer class="text-muted mt-5">
-    <small>Bingão do Guigão – Versão v0.5.1.0 – Última atualização: 07/05/2025</small>
+    <small>Versão v0.5.1.1 – Última atualização: 07/05/2025</small>
   </footer>
 
   <!-- Bootstrap JS -->
@@ -112,186 +124,6 @@
       audioClear.currentTime = 0;
       audioClear.play();
       renderCartela(gerarCartela(hashToSeed(nick)), nick);
-    }
-
-    function renderCartela(linhas, nick) {
-      const container = document.getElementById('cartela-container');
-      const tabela = document.createElement('table');
-      tabela.className = "cartela-tabela";
-
-      const marcados = new Set(carregarMarcacoes(nick));
-      const novosMarcados = new Set(marcados);
-
-      const audioSelect = document.getElementById('audio-select');
-      const audioUnselect = document.getElementById('audio-unselect');
-
-      linhas.forEach(linha => {
-        const tr = document.createElement('tr');
-        linha.forEach(numero => {
-          const td = document.createElement('td');
-          td.textContent = numero;
-
-          if (marcados.has(numero)) {
-            td.classList.add('marcado');
-          }
-
-          td.addEventListener('click', () => {
-            td.classList.toggle('marcado');
-            if (td.classList.contains('marcado')) {
-              novosMarcados.add(numero);
-              audioSelect.currentTime = 0;
-              audioSelect.play();
-            } else {
-              novosMarcados.delete(numero);
-              audioUnselect.currentTime = 0;
-              audioUnselect.play();
-            }
-            salvarMarcacoes(nick, Array.from(novosMarcados));
-          });
-
-          tr.appendChild(td);
-        });
-        tabela.appendChild(tr);
-      });
-
-      container.innerHTML = '';
-      container.appendChild(tabela);
-    }
-
-    const nick = getURLParam('nick');
-    if (nick) {
-      document.getElementById('nick-display').textContent = `Twitch: ${nick}`;
-      const seed = hashToSeed(nick);
-      const cartela = gerarCartela(seed);
-      renderCartela(cartela, nick);
-
-      const limparBtn = document.getElementById('limpar-btn');
-      limparBtn.classList.remove('d-none');
-      limparBtn.addEventListener('click', () => {
-        limparMarcacoes(nick);
-      });
-    } else {
-      document.getElementById('cartela-container').innerHTML = "<p class='text-danger'>Parâmetro 'nick' não fornecido na URL.</p>";
-    }
-  </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Bingão do Guigão</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Bootstrap CSS (somente para layout e botão) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <style>
-    .cartela-tabela {
-      border-collapse: collapse;
-      margin: 0 auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-
-    .cartela-tabela td {
-      width: 100px;
-      aspect-ratio: 1 / 1;
-      font-size: 28px;
-      transition: background 0.3s, transform 0.2s;
-      cursor: pointer;
-      vertical-align: middle;
-      padding: 0;
-      text-align: center;
-      border: 1px solid #ccc;
-      background-color: white;
-    }
-
-    .cartela-tabela td:hover {
-      background: #e0f7fa;
-      transform: scale(1.05);
-    }
-
-    .cartela-tabela td.marcado {
-      background: #26a69a !important;
-      color: white;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body class="bg-light d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
-
-  <div class="container">
-    <h1 class="mb-2">Bingão do Guigão</h1>
-    <h5 id="nick-display" class="text-muted mb-4"></h5>
-    <div id="cartela-container" class="mb-3"></div>
-    <button id="limpar-btn" class="btn btn-outline-danger d-none">Limpar Marcações</button>
-  </div>
-
-  <!-- Áudios -->
-  <audio id="audio-select" src="https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3"></audio>
-  <audio id="audio-unselect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3"></audio>
-  <audio id="audio-clear" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-changing-tab-206.mp3"></audio>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    function getURLParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    function hashToSeed(str) {
-      let h = 0;
-      for (let i = 0; i < str.length; i++) {
-        h = Math.imul(31, h) + str.charCodeAt(i) | 0;
-      }
-      return h >>> 0;
-    }
-
-    function mulberry32(a) {
-      return function() {
-        let t = a += 0x6D2B79F5;
-        t = Math.imul(t ^ t >>> 15, t | 1);
-        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
-      };
-    }
-
-    function gerarCartela(seed) {
-      const possibilidades = Array.from({ length: 90 }, (_, i) => i + 1);
-      const rand = mulberry32(seed);
-
-      for (let i = possibilidades.length - 1; i > 0; i--) {
-        const j = Math.floor(rand() * (i + 1));
-        [possibilidades[i], possibilidades[j]] = [possibilidades[j], possibilidades[i]];
-      }
-
-      const selecionados = possibilidades.slice(0, 20);
-      const linhas = [];
-      for (let i = 0; i < 4; i++) {
-        linhas.push(selecionados.slice(i * 5, i * 5 + 5));
-      }
-
-      return linhas;
-    }
-
-    function salvarMarcacoes(nick, numerosMarcados) {
-      sessionStorage.setItem(`marcados_${nick}`, JSON.stringify(numerosMarcados));
-    }
-
-    function carregarMarcacoes(nick) {
-      const data = sessionStorage.getItem(`marcados_${nick}`);
-      return data ? JSON.parse(data) : [];
-    }
-
-    function limparMarcacoes(nick) {
-      sessionStorage.removeItem(`marcados_${nick}`);
-      renderCartela(gerarCartela(hashToSeed(nick)), nick);
-      const audioClear = document.getElementById('audio-clear');
-      audioClear.currentTime = 0;
-      audioClear.play();
     }
 
     function renderCartela(linhas, nick) {
