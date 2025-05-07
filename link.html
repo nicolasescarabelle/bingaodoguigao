@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Hash MD5</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+  <script>
+    // Função para obter parâmetro da URL
+    function getParametro(nome) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(nome);
+    }
+
+    // Pegando valor e gerando hash MD5
+    const valor = getParametro("valor");
+    if (valor) {
+      const hash = CryptoJS.MD5(valor).toString();
+      document.write(`${hash}`);
+    } else {
+      document.write("<p>Parâmetro 'valor' não encontrado na URL.</p>");
+    }
+  </script> 
+</body>
+</html>
