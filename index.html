@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cartela do Deus Supremo</title>
+  <title>Bingão do Guigão</title>
   <style>
     body {
       margin: 0;
@@ -13,9 +13,17 @@
       align-items: center;
       font-family: sans-serif;
       background: #f9f9f9;
+      text-align: center;
     }
 
     h1 {
+      margin-bottom: 5px;
+      font-size: 36px;
+    }
+
+    #nick-display {
+      font-size: 20px;
+      color: #555;
       margin-bottom: 20px;
     }
 
@@ -26,14 +34,15 @@
     }
 
     td {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       text-align: center;
       vertical-align: middle;
-      font-size: 18px;
+      font-size: 20px;
       border: 1px solid #ccc;
       background: #fff;
       transition: background 0.3s, transform 0.2s;
+      padding: 10px;
     }
 
     td:hover {
@@ -50,7 +59,8 @@
 </head>
 <body>
 
-  <h1>Cartela do Deus Supremo</h1>
+  <h1>Bingão do Guigão</h1>
+  <div id="nick-display"></div>
   <div id="cartela-container"></div>
 
   <script>
@@ -120,6 +130,7 @@
 
     const nick = getURLParam('nick');
     if (nick) {
+      document.getElementById('nick-display').textContent = `Twitch: ${nick}`;
       const seed = hashToSeed(nick);
       const cartela = gerarCartela(seed);
       renderCartela(cartela);
