@@ -10,21 +10,21 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(145deg, #c1fca0, #95e979);
-      color: #222;
+      background-color: #000;
+      color: #fff;
     }
 
     h1 {
       font-family: cursive;
       font-size: 64px;
-      color: #7b2cbf;
+      color: #c77dff;
       margin-top: 40px;
     }
 
     #nick-display {
       font-size: 20px;
       margin-bottom: 20px;
-      color: #333;
+      color: #f8f8f8;
     }
 
     .letras-header {
@@ -37,7 +37,7 @@
     .letras-header span {
       font-size: 32px;
       font-weight: bold;
-      color: #7b2cbf;
+      color: #c77dff;
     }
 
     .grid-cartela {
@@ -51,12 +51,13 @@
     }
 
     .carta {
-      background-color: #fff;
+      background-color: #ffeb3b;
+      color: #111;
       border-radius: 15px;
       padding: 10px;
       font-size: 14px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 2px 6px rgba(255, 255, 0, 0.5);
       transition: 0.2s;
       cursor: pointer;
       height: 120px;
@@ -66,12 +67,12 @@
     }
 
     .carta:hover {
-      background-color: #d1f9ea;
+      background-color: #ffe600;
       transform: scale(1.02);
     }
 
     .carta.marcado {
-      background-color: #26a69a;
+      background-color: #ff5722 !important;
       color: white;
       font-weight: bold;
     }
@@ -83,7 +84,7 @@
     footer {
       text-align: center;
       margin-top: 40px;
-      color: #555;
+      color: #999;
     }
   </style>
 </head>
@@ -102,19 +103,20 @@
     </div>
 
     <div id="cartela-container" class="grid-cartela"></div>
-    <button id="limpar-btn" class="btn btn-outline-danger d-none">Limpar Marcações</button>
+    <button id="limpar-btn" class="btn btn-outline-light d-none">Limpar Marcações</button>
   </div>
 
+  <!-- Áudios -->
   <audio id="audio-select" src="https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3"></audio>
   <audio id="audio-unselect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3"></audio>
   <audio id="audio-clear" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-changing-tab-206.mp3"></audio>
 
   <footer>
-    <small>Versão v0.7.0.0 – Última atualização: 07/05/2025</small>
+    <small>Versão v0.8.0.0 – Última atualização: 07/05/2025</small>
   </footer>
 
   <script>
-    const eventosValorant = [...Array(100).keys()].map(i => `Evento #${i + 1}`); // Substitua aqui pela lista real
+    const eventosValorant = [...Array(100).keys()].map(i => `Evento #${i + 1}`); // Substitua por lista real
 
     function getURLParam(param) {
       return new URLSearchParams(window.location.search).get(param);
