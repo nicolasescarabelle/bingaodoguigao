@@ -17,7 +17,7 @@
     const valor = getParametro("valor");
     if (valor) {
       const hash = CryptoJS.MD5(valor).toString();
-      document.write(`${hash}`);
+      document.write(`<pre style='word-wrap: break-word; white-space: pre-wrap;'>${hash}</pre>`);
     } else {
       document.write("<p>Parâmetro 'valor' não encontrado na URL.</p>");
     }
