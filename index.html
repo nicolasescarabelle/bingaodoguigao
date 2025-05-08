@@ -1,73 +1,119 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Bingão do Guigão</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
   <style>
-    .cartela-tabela {
-      border-collapse: collapse;
-      margin: 0 auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #000;
+      color: #fff;
     }
 
-    .cartela-tabela td {
-      width: 160px;
-      height: 160px;
-      font-size: 14px;
+    h1 {
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 64px;
+      color: #fdd835;
+      margin-top: 40px;
+    }
+
+    #nick-display {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #f8f8f8;
+    }
+
+    .letras-header {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .letras-header span {
+      font-size: 32px;
+      font-weight: bold;
+      color: #fdd835;
+    }
+
+    .grid-cartela {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      justify-content: center;
+      padding: 0 10px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .carta {
+      background-color: #fdd835;
+      color: #111;
+      border-radius: 12px;
       padding: 10px;
+      font-size: 14px;
       text-align: center;
-      vertical-align: middle;
-      border: 1px solid #ccc;
-      background-color: white;
-      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 2px 6px rgba(255, 255, 0, 0.5);
+      transition: 0.2s;
       cursor: pointer;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .cartela-tabela td:hover {
-      background: #e0f7fa;
+    .carta:hover {
+      background-color: #ffe600;
       transform: scale(1.02);
     }
 
-    .cartela-tabela td.marcado {
-      background: #26a69a !important;
+    .carta.marcado {
+      background-color: #ff5722 !important;
       color: white;
       font-weight: bold;
     }
 
+    #limpar-btn {
+      margin-top: 30px;
+    }
+
     footer {
-      position: relative;
       text-align: center;
-      width: 100%;
       margin-top: 40px;
+      color: #999;
     }
   </style>
 </head>
-<body class="bg-light d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
+<body>
 
-  <div class="container">
-    <h1 class="mb-2">Bingão do Guigão</h1>
-    <h5 id="nick-display" class="text-muted mb-4"></h5>
-    <div id="cartela-container" class="mb-3"></div>
-    <button id="limpar-btn" class="btn btn-outline-danger d-none">Limpar Marcações</button>
+  <div class="container text-center">
+    <h1>Bingo!</h1>
+    <h5 id="nick-display"></h5>
+
+    <div class="letras-header">
+      <span>G</span><span>U</span><span>I</span><span>G</span><span>Z</span>
+    </div>
+
+    <div id="cartela-container" class="grid-cartela"></div>
+    <button id="limpar-btn" class="btn btn-outline-light d-none">Limpar Marcações</button>
   </div>
 
-  <!-- Áudios -->
   <audio id="audio-select" src="https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3"></audio>
   <audio id="audio-unselect" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3"></audio>
   <audio id="audio-clear" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-changing-tab-206.mp3"></audio>
 
-  <footer class="text-muted mt-5">
-    <small>Versão v0.6.0.0 – Última atualização: 07/05/2025</small>
+  <footer>
+    <small>Versão v0.9.0.0 – Última atualização: 07/05/2025</small>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
-    const eventosValorant = [
-      "Comprar uma Sheriff no terceiro round",
+    const eventosValorant = ["Comprar uma Sheriff no terceiro round",
       "Comprar Operator no quinto round",
       "Dropar arma para um teammate no 9 round",
       "Comprar Phantom e fazer 3K",
@@ -160,8 +206,7 @@
     ];
 
     function getURLParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+      return new URLSearchParams(window.location.search).get(param);
     }
 
     function hashToSeed(str) {
@@ -173,7 +218,7 @@
     }
 
     function mulberry32(a) {
-      return function() {
+      return function () {
         let t = a += 0x6D2B79F5;
         t = Math.imul(t ^ t >>> 15, t | 1);
         t ^= t + Math.imul(t ^ t >>> 7, t | 61);
@@ -184,24 +229,15 @@
     function gerarCartela(seed) {
       const rand = mulberry32(seed);
       const eventos = [...eventosValorant];
-
-      // Embaralha eventos
       for (let i = eventos.length - 1; i > 0; i--) {
         const j = Math.floor(rand() * (i + 1));
         [eventos[i], eventos[j]] = [eventos[j], eventos[i]];
       }
-
-      const selecionados = eventos.slice(0, 20);
-      const linhas = [];
-      for (let i = 0; i < 4; i++) {
-        linhas.push(selecionados.slice(i * 5, i * 5 + 5));
-      }
-
-      return linhas;
+      return eventos.slice(0, 20);
     }
 
-    function salvarMarcacoes(nick, eventos) {
-      sessionStorage.setItem(`marcados_${nick}`, JSON.stringify(eventos));
+    function salvarMarcacoes(nick, marcados) {
+      sessionStorage.setItem(`marcados_${nick}`, JSON.stringify(marcados));
     }
 
     function carregarMarcacoes(nick) {
@@ -215,48 +251,35 @@
       renderCartela(gerarCartela(hashToSeed(nick)), nick);
     }
 
-    function renderCartela(linhas, nick) {
+    function renderCartela(itens, nick) {
       const container = document.getElementById('cartela-container');
-      const tabela = document.createElement('table');
-      tabela.className = "cartela-tabela";
-
+      container.innerHTML = '';
       const marcados = new Set(carregarMarcacoes(nick));
-      const novosMarcados = new Set(marcados);
+      const novos = new Set(marcados);
 
-      const audioSelect = document.getElementById('audio-select');
-      const audioUnselect = document.getElementById('audio-unselect');
+      itens.forEach(evento => {
+        const div = document.createElement('div');
+        div.className = 'carta';
+        div.textContent = evento;
+        if (marcados.has(evento)) div.classList.add('marcado');
 
-      linhas.forEach(linha => {
-        const tr = document.createElement('tr');
-        linha.forEach(evento => {
-          const td = document.createElement('td');
-          td.textContent = evento;
+        div.addEventListener('click', () => {
+          div.classList.toggle('marcado');
+          const som = div.classList.contains('marcado') ? 'audio-select' : 'audio-unselect';
+          document.getElementById(som).currentTime = 0;
+          document.getElementById(som).play();
 
-          if (marcados.has(evento)) {
-            td.classList.add('marcado');
+          if (div.classList.contains('marcado')) {
+            novos.add(evento);
+          } else {
+            novos.delete(evento);
           }
 
-          td.addEventListener('click', () => {
-            td.classList.toggle('marcado');
-            if (td.classList.contains('marcado')) {
-              novosMarcados.add(evento);
-              audioSelect.currentTime = 0;
-              audioSelect.play();
-            } else {
-              novosMarcados.delete(evento);
-              audioUnselect.currentTime = 0;
-              audioUnselect.play();
-            }
-            salvarMarcacoes(nick, Array.from(novosMarcados));
-          });
-
-          tr.appendChild(td);
+          salvarMarcacoes(nick, Array.from(novos));
         });
-        tabela.appendChild(tr);
-      });
 
-      container.innerHTML = '';
-      container.appendChild(tabela);
+        container.appendChild(div);
+      });
     }
 
     const nick = getURLParam('nick');
@@ -265,16 +288,12 @@
       const seed = hashToSeed(nick);
       const cartela = gerarCartela(seed);
       renderCartela(cartela, nick);
-
       const limparBtn = document.getElementById('limpar-btn');
       limparBtn.classList.remove('d-none');
-      limparBtn.addEventListener('click', () => {
-        limparMarcacoes(nick);
-      });
+      limparBtn.addEventListener('click', () => limparMarcacoes(nick));
     } else {
       document.getElementById('cartela-container').innerHTML = "<p class='text-danger'>Parâmetro 'nick' não fornecido na URL.</p>";
     }
   </script>
-
 </body>
 </html>
