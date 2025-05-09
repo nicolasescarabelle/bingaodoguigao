@@ -324,17 +324,43 @@
     }
 
     const nick = getURLParam('nick');
-    if (nick) {
-      document.getElementById('nick-display').textContent = `Twitch: ${nick}`;
-      const seed = hashToSeed(nick);
-      const cartela = gerarCartela(seed);
-      renderCartela(cartela, nick);
-      const limparBtn = document.getElementById('limpar-btn');
-      limparBtn.classList.remove('d-none');
-      limparBtn.addEventListener('click', () => limparMarcacoes(nick));
-    } else {
-      document.getElementById('cartela-container').innerHTML = "<p class='text-danger'>Parâmetro 'nick' não fornecido na URL.</p>";
-    }
-  </script>
+if (nick) {
+  document.getElementById('nick-display').textContent = `Twitch: ${nick}`;
+
+  let cartela;
+
+  if (nick.toLowerCase() === "nicolasescarab") {
+    cartela = [
+      "Tomar um 7x1 no placar",
+      "Morrer com a faca na mão",
+      "Comprar Odin na defesa",
+      "Instalockar neon",
+      "Fazer sheriff + colete",
+      "Perder uma situação de 1x2",
+      "Falar que meu time é ruim demais",
+      "Morrer para vandale",
+      "Ganhar uma situação de 1x1",
+      "Morrer para Ghost",
+      "Perder round com spike plantada",
+      "Dar um HS de Marshal",
+      "Ser o último a morrer do time",
+      "Morrer lurkeando",
+      "Ganhar um round sem plantar a spike",
+      "Puxar operator e morrer sem matar ninguem",
+      "Comprar Vandal e fazer 3K",
+      "Morrer para Sheriff",
+      "Ganhar partida sem dar nenhum ACE",
+      "Ficar com 200 créditos após comprar tudo"
+    ];
+  } else {
+    const seed = hashToSeed(nick);
+    cartela = gerarCartela(seed);
+  }
+
+  renderCartela(cartela, nick);
+  const limparBtn = document.getElementById('limpar-btn');
+  limparBtn.classList.remove('d-none');
+  limparBtn.addEventListener('click', () => limparMarcacoes(nick));
+}
 </body>
 </html>
